@@ -1,0 +1,692 @@
+<!doctype html>
+<!--
+  SCAIZ teaser page: product advert + Decision Readiness Test. A single self-contained file
+  with no build step and no backend calls. Open it in a browser, or serve it from the app at
+  /docs-static/scaiz-decision-readiness-test.html.
+
+  To rebrand or change this page, edit these places only:
+    1. <script> SITE = {...}: contact email, stats, platform modules, how-it-works steps,
+       tech stack, benefits and the schema example. All of these lists render from SITE.
+    2. <script> DIMS / Q / ADVICE / BANDS: readiness areas, questions, advice and levels.
+       DIMS[].modules lists the SCAIZ modules shown for each area and in the results.
+    3. Static headlines in the HTML sections below (hero, section titles, closing band).
+    4. :root CSS variables (--brand, --brand-ink, fonts) for colours and type.
+    5. The logo is embedded once, in the nav <img>. The footer copies it at runtime.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SCAIZ: supply chain decision intelligence | Decision Readiness Test</title>
+<meta name="description" content="SCAIZ turns the supply chain data you already have into forecasts, replenishment, control tower alerts and a prescriptive decision queue. Take the 3-minute Decision Readiness Test.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: enterprise landing rhythm — dark nav, full-bleed animated hero, stat row, navy "what we measure" band, industry cards, then the test console (questions + live readiness map) and a navy closing band. */
+:root{
+  --brand:#1994FA; --brand-ink:#0A5FAD; --on-brand:#05070F;
+  --ink:#FFFFFF; --navy:#F4F8FD; --navy-2:#FFFFFF; --on-dark:#0B1220; --on-dark-muted:#5A6476; --dark-line:rgba(11,18,32,.12); --trail:25,148,250; --trail-2:10,95,173; --road:11,18,32;
+  --bg:#FFFFFF; --bg-2:#F2F4F7; --surface:#FFFFFF; --raise:#F8FAFC;
+  --fg:#0B1220; --muted:#5A6476; --line:#DDE2EA; --soft:#E6F2FE;
+  --shadow:0 1px 2px rgba(11,18,32,.05),0 10px 28px -14px rgba(11,18,32,.22);
+  --f-display:"Outfit","Segoe UI",system-ui,sans-serif;
+  --f-body:"Figtree","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+
+:root,:root[data-theme="dark"]{color-scheme:light}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 76px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 var(--f-body)}
+button{font:inherit;color:inherit}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px;border-radius:6px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;font-weight:400;letter-spacing:-.015em}
+p{margin:0}
+.in{max-width:1180px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font:500 12px var(--f-body);letter-spacing:.08em;text-transform:uppercase}
+.eyebrow::before{content:"";width:12px;height:8px;border-radius:4px;background:var(--brand)}
+.btn{appearance:none;border:0;border-radius:6px;background:var(--brand);color:var(--on-brand);font:500 15px var(--f-body);padding:12px 18px;cursor:pointer;display:inline-flex;gap:10px;align-items:center;text-decoration:none;transition:filter .15s,transform .15s}
+.btn:hover{filter:brightness(1.08)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.line{background:transparent;color:var(--on-dark);box-shadow:inset 0 0 0 1px var(--on-dark-muted)}
+.btn.ghost{background:transparent;color:var(--brand-ink);box-shadow:inset 0 0 0 1px var(--line)}
+.arr{width:16px;height:16px;flex:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--ink);color:var(--on-dark);border-top:3px solid var(--brand);border-bottom:1px solid var(--dark-line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--ink)}
+.nav .in{display:flex;align-items:center;gap:28px;padding-block:12px}
+.logo{height:26px;width:auto;display:block;flex:none}
+.links{display:flex;gap:24px;font-size:14px;flex:1}
+.links a{text-decoration:none;opacity:.9}
+.links a:hover{opacity:1;color:var(--brand)}
+@media (max-width:820px){.links{display:none}.nav .in{justify-content:space-between}}
+.nav .btn{padding:9px 14px;font-size:14px}
+
+/* hero */
+.hero{position:relative;background:var(--ink);color:var(--on-dark);overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero{border-bottom:1px solid var(--dark-line)}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,color-mix(in srgb,var(--ink) 90%,transparent) 0%,color-mix(in srgb,var(--ink) 50%,transparent) 55%,color-mix(in srgb,var(--ink) 15%,transparent) 100%)}
+.hero .in{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:end;padding-block:clamp(72px,12vw,150px) clamp(48px,7vw,80px)}
+.hero h1{font-size:clamp(38px,6vw,68px);line-height:1.04;font-weight:300}
+.hero-r{display:flex;flex-direction:column;gap:20px;font-size:15.5px;color:var(--on-dark)}
+@media (max-width:820px){.hero .in{grid-template-columns:1fr;align-items:start}}
+
+/* intro + stats */
+.sec{padding-block:clamp(56px,8vw,96px)}
+.intro{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.intro h2{font-size:clamp(28px,3.6vw,40px);line-height:1.15}
+@media (max-width:820px){.intro{grid-template-columns:1fr;gap:20px}}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin-top:clamp(48px,7vw,80px)}
+.stat{border-top:2px solid var(--brand);padding-top:22px;min-width:0}
+.stat b{display:block;font:300 clamp(44px,6vw,72px)/1 var(--f-display);color:var(--brand-ink);font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.stat span{display:block;margin-top:10px;color:var(--muted);font-size:15px}
+@media (max-width:820px){.stats{grid-template-columns:1fr 1fr}}
+
+/* navy measure band */
+.band{background:var(--navy);color:var(--on-dark)}
+.measure{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+@media (max-width:860px){.measure{grid-template-columns:1fr}}
+.measure h2{font-size:clamp(24px,3vw,32px);line-height:1.25;margin:14px 0 22px}
+.mlist{display:flex;flex-direction:column}
+.mlist button{appearance:none;background:transparent;border:0;border-bottom:1px dashed var(--dark-line);color:var(--on-dark);text-align:left;padding:14px 10px;font:400 18px var(--f-display);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;transition:background .15s,color .15s}
+.mlist button:hover{background:rgba(25,148,250,.08)}
+.mlist button[aria-selected="true"]{background:var(--brand);color:var(--on-brand);border-bottom-color:transparent}
+.mlist small{font:500 12px var(--f-mono);opacity:.7}
+.mpanel{background:linear-gradient(160deg,var(--navy-2),var(--ink));border:1px solid var(--dark-line);border-radius:10px;padding:clamp(20px,3vw,32px);display:flex;flex-direction:column;gap:16px;min-height:100%}
+.mpanel h3{font-size:26px;font-weight:400}
+.mpanel{box-shadow:var(--shadow)}
+.mpanel .q{font-size:15px;color:var(--on-dark-muted)}
+.ladder{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.ladder div{display:grid;grid-template-columns:54px 1fr;gap:12px;align-items:center;font-size:14px;padding:8px 10px;border-radius:6px;background:rgba(25,148,250,.06)}
+.ladder div:last-child{background:rgba(25,148,250,.18);box-shadow:inset 0 0 0 1px var(--brand)}
+.ladder b{font:500 11.5px var(--f-mono);color:var(--brand-ink);letter-spacing:.04em}
+
+/* industries */
+.ind-h{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:28px}
+.ind-h h2{font-size:clamp(26px,3.4vw,38px)}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:980px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.cards{grid-template-columns:1fr}}
+.icard{background:var(--navy);color:var(--on-dark);border:1px solid var(--dark-line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.icard canvas{width:100%;height:120px;display:block;background:var(--navy);border-bottom:1px solid var(--dark-line)}
+.icard .b{padding:20px;display:flex;flex-direction:column;gap:10px;flex:1}
+.icard h3{font-size:20px;color:var(--brand-ink)}
+.icard p{font-size:14.5px;color:var(--on-dark-muted);flex:1}
+.icard button{align-self:flex-start;background:none;border:0;color:var(--on-dark);font:500 14px var(--f-body);display:inline-flex;gap:8px;align-items:center;cursor:pointer;padding:6px 0}
+.icard button .dot{width:22px;height:22px;border-radius:50%;background:var(--brand);color:var(--on-brand);display:grid;place-items:center}
+
+/* test console */
+.test{background:var(--bg-2)}
+.test-h{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.test-h h2{font-size:clamp(26px,3.4vw,38px)}
+.ctr{font:500 13px var(--f-mono);color:var(--muted)}
+.console{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:20px;align-items:start}
+@media (max-width:860px){.console{grid-template-columns:1fr}}
+.pane{border-radius:10px;min-width:0}
+.q-pane{background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);padding:clamp(20px,4vw,40px);display:flex;flex-direction:column;gap:22px;min-height:520px}
+@media (max-width:860px){.q-pane{min-height:0}}
+.q-pane h2{font-size:clamp(21px,2.6vw,28px);line-height:1.25}
+.q-pane h1{font-size:clamp(28px,3.6vw,40px);line-height:1.12;font-weight:300}
+.k{font:500 11.5px var(--f-mono);letter-spacing:.09em;text-transform:uppercase;color:var(--brand-ink)}
+.map-pane{--line:var(--dark-line);--fg:var(--on-dark);--muted:var(--on-dark-muted);--surface:var(--navy);--raise:var(--navy-2);--soft:rgba(25,148,250,.16);
+  background:var(--navy-2);border:1px solid var(--dark-line);box-shadow:var(--shadow);color:var(--on-dark);padding:20px;display:flex;flex-direction:column;gap:14px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 80px)}
+@media (max-width:860px){.map-pane{position:static}}
+.map-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.map-h h3{font-size:18px}
+.live{display:flex;align-items:center;gap:8px;font:500 11.5px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.live i{width:7px;height:7px;border-radius:50%;background:var(--brand);animation:ping 1.8s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(25,148,250,.6)}80%,100%{box-shadow:0 0 0 8px rgba(25,148,250,0)}}
+svg.radar{width:100%;height:auto;display:block}
+.radar .ring{fill:none;stroke:var(--line)}
+.radar .axis{stroke:var(--line)}
+.radar .lbl{fill:var(--fg);font:500 13px var(--f-display)}
+.radar .lbl.dim{fill:var(--muted)}
+.radar .sub{fill:var(--muted);font:500 10px var(--f-mono)}
+.radar .you{fill:rgba(25,148,250,.25);stroke:var(--brand);stroke-width:2;stroke-linejoin:round;transition:all .6s cubic-bezier(.2,.8,.2,1)}
+.radar .bench{fill:none;stroke:var(--on-dark-muted);stroke-width:1.2;stroke-dasharray:4 4}
+.radar .ex{fill:rgba(25,148,250,.12);stroke:var(--brand);stroke-width:1.2;stroke-dasharray:3 3}
+.radar .node{fill:var(--navy);stroke:var(--on-dark-muted);stroke-width:2;transition:all .4s}
+.radar .node.on{fill:var(--brand);stroke:var(--brand)}
+.radar .node.cur{stroke:var(--brand);stroke-width:3}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:18px;border-top:2px solid var(--brand)}
+.sw.d{border-top:1.5px dashed var(--on-dark-muted)}
+.mstats{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.mstats div{background:var(--raise);padding:8px 4px;text-align:center;min-width:0}
+.mstats b{display:block;font:500 15px var(--f-mono);font-variant-numeric:tabular-nums}
+.mstats span{display:block;font:500 9.5px var(--f-mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.rail{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.rail div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.rail i{height:3px;border-radius:2px;background:var(--line);overflow:hidden;position:relative}
+.rail i b{position:absolute;inset:0;background:var(--brand);transform-origin:left;transition:transform .35s}
+.rail span{font:500 10.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rail .cur span{color:var(--brand-ink)}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:center;text-align:left;width:100%;background:var(--raise);border:1px solid var(--line);border-radius:8px;padding:13px 14px;cursor:pointer;font:400 15px/1.45 var(--f-body);transition:border-color .15s,background .15s,transform .15s}
+.opt:hover{border-color:var(--brand);transform:translateX(2px)}
+.opt .n{font:500 12px var(--f-mono);width:28px;height:28px;border-radius:6px;display:grid;place-items:center;border:1px solid var(--line);color:var(--muted)}
+.opt.sel{background:var(--soft);border-color:var(--brand)}
+.opt.sel .n{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.hint{font-size:13px;color:var(--muted)}
+select{width:100%;font:400 16px var(--f-body);padding:14px;border-radius:8px;border:1px solid var(--line);background:var(--raise);color:var(--fg)}
+.slider{background:var(--raise);border:1px solid var(--line);border-radius:8px;padding:22px 18px 16px;display:flex;flex-direction:column;gap:10px}
+.sv{display:flex;align-items:baseline;gap:6px;justify-content:center}
+.sv b{font:300 44px/1 var(--f-display);color:var(--brand-ink);font-variant-numeric:tabular-nums}
+.sv span{font:500 13px var(--f-mono);color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--brand);height:28px}
+.ticks{display:flex;justify-content:space-between;font:500 11px var(--f-mono);color:var(--muted);padding:0 4px}
+.ends{display:flex;justify-content:space-between;gap:16px;font-size:13px;color:var(--muted)}
+.ends span:last-child{text-align:right}
+.fade{animation:fade .35s ease both}
+@keyframes fade{from{opacity:.001;transform:translateY(8px)}to{opacity:1;transform:none}}
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.feat div{background:var(--raise);padding:12px 14px}
+.feat b{display:block;font:400 22px var(--f-display)}
+.feat span{font-size:13px;color:var(--muted)}
+
+/* results */
+.score{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.dial{position:relative;width:124px;height:124px;flex:none}
+.dial svg{width:100%;height:100%;transform:rotate(-90deg)}
+.dial .t{fill:none;stroke:var(--soft);stroke-width:10}
+.dial .f{fill:none;stroke:var(--brand);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.2,.8,.2,1)}
+.dial div{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.dial b{font:300 38px/1 var(--f-display);font-variant-numeric:tabular-nums}
+.dial span{font:500 11px var(--f-mono);color:var(--muted)}
+.lvl{display:flex;gap:4px;margin-top:4px}
+.lvl i{width:28px;height:5px;border-radius:3px;background:var(--line)}
+.lvl i.on{background:var(--brand)}
+.summary{background:var(--soft);border-radius:8px;padding:12px 14px;font-size:15px}
+.fcards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:980px){.fcards{grid-template-columns:1fr}}
+.fcard{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--line);border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow);min-width:0}
+.fcard.top{border-top-color:var(--brand)}
+.card-h{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.card-h h3{font-size:19px}
+.tag{font:600 10.5px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;background:var(--brand);color:var(--on-brand);padding:4px 8px;border-radius:4px}
+.meter{display:flex;align-items:center;gap:10px;font:500 12px var(--f-mono);color:var(--muted)}
+.meter i{flex:1;height:5px;border-radius:3px;background:var(--soft);overflow:hidden}
+.meter i b{display:block;height:100%;background:var(--brand)}
+.fcard p{font-size:14.5px}
+.lower{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:20px;margin-top:20px;align-items:start}
+@media (max-width:860px){.lower{grid-template-columns:1fr}}
+.cta{background:var(--surface);border:1px solid var(--brand);padding:24px;display:flex;flex-direction:column;gap:14px}
+.cta h2{font-size:26px}
+.mail{font:500 15px var(--f-mono);user-select:all;background:var(--soft);padding:9px 12px;border-radius:6px;word-break:break-all}
+details{background:var(--surface);border:1px solid var(--line);padding:18px 20px}
+summary{cursor:pointer;font-weight:600}
+details p{color:var(--muted);font-size:14px;margin-top:10px}
+.toast{font-size:13px;color:var(--brand-ink);min-height:1.2em}
+
+/* shared section header + chips */
+.sec-h{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:28px}
+.sec-h h2{font-size:clamp(26px,3.4vw,38px);margin-top:12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:500 11.5px var(--f-mono);padding:4px 8px;border-radius:4px;background:var(--soft);color:var(--brand-ink)}
+
+/* platform modules */
+.plat{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow);transition:border-color .15s,transform .15s;min-width:0}
+.pcard:hover{border-color:var(--brand);transform:translateY(-2px)}
+.pcard h3{font-size:18px;color:var(--brand-ink)}
+.pcard p{font-size:14.5px;flex:1}
+
+/* how it works */
+.pipe{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+@media (max-width:980px){.pipe{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.pipe{grid-template-columns:1fr}}
+.step{background:var(--navy-2);border:1px solid var(--dark-line);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow);min-width:0}
+.step b{font:500 11.5px var(--f-mono);color:var(--brand-ink);letter-spacing:.08em}
+.step h3{font-size:19px}
+.step p{font-size:14px;color:var(--on-dark-muted);flex:1}
+.stack{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1px;background:var(--dark-line);border:1px solid var(--dark-line);border-radius:10px;overflow:hidden;margin-top:24px}
+.stack div{background:var(--navy-2);padding:14px 16px;min-width:0}
+.stack b{display:block;font:500 15px var(--f-display)}
+.stack span{font-size:13px;color:var(--on-dark-muted)}
+
+/* benefits */
+.bens{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+@media (max-width:980px){.bens{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.bens{grid-template-columns:1fr}}
+.ben{border-top:2px solid var(--brand);padding-top:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.ben h3{font-size:20px}
+.ben p{font-size:14.5px;color:var(--muted)}
+.schema{margin-top:clamp(36px,5vw,56px);display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:18px;align-items:center;background:var(--bg-2);border:1px solid var(--line);border-radius:10px;padding:clamp(18px,3vw,28px)}
+@media (max-width:760px){.schema{grid-template-columns:1fr}.schema .to{transform:rotate(90deg);justify-self:center}}
+.schema h3{font-size:20px;grid-column:1/-1}
+.schema .col{display:flex;flex-direction:column;gap:8px}
+.schema .src{display:flex;justify-content:space-between;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:9px 12px;font:500 13px var(--f-mono)}
+.schema .src small{color:var(--muted);font:400 12px var(--f-body)}
+.schema .role{background:var(--soft);border:1px solid var(--brand);border-radius:6px;padding:9px 12px;font:500 13px var(--f-mono);color:var(--brand-ink)}
+.schema .to{width:34px;height:34px;color:var(--brand)}
+
+/* closing + footer */
+.close{display:grid;grid-template-columns:1fr auto;gap:28px;align-items:center}
+.close h2{font-size:clamp(28px,4vw,44px);font-weight:300}
+@media (max-width:700px){.close{grid-template-columns:1fr}}
+footer{background:var(--ink);color:var(--on-dark-muted);font-size:13px;border-top:1px solid var(--dark-line)}
+footer .in{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding-block:28px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Main"><div class="in">
+  <img class="logo" id="navLogo" src="data:image/png;base64,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" alt="SCAIZ">
+  <div class="links"><a href="#platform">Platform</a><a href="#how">How it works</a><a href="#why">Why SCAIZ</a><a href="#test">Readiness test</a><a href="#talk">Talk to us</a></div>
+  <a class="btn" href="#test" data-start>Take the test<svg class="arr" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
+</div></nav>
+
+<header class="hero">
+  <canvas id="heroCv" aria-hidden="true"></canvas>
+  <div class="in">
+    <h1>Your supply chain, decided with confidence</h1>
+    <div class="hero-r">
+      <p>SCAIZ turns the tables you already have (ERP exports, spreadsheets, databases) into forecasts, replenishment plans, control tower alerts and a prescriptive decision queue. You don’t need to remap columns or rebuild anything. Take the 3-minute readiness test to see where SCAIZ would help you first.</p>
+      <div class="row">
+        <a class="btn" href="#test" data-start>Take the test<svg class="arr" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
+        <a class="btn line" href="#platform">See the platform</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="sec"><div class="in">
+  <div class="intro">
+    <h2>One platform from raw tables to agreed supply decisions</h2>
+    <p class="muted" style="font-size:17px">Most supply chains don’t lack data. They lose time stitching it together, arguing about whose number is right and waiting for the next review. SCAIZ connects your data, works out what each column means and runs planning engines on it. Every number links back to the evidence behind it.</p>
+  </div>
+  <div class="stats" id="stats"></div>
+</div></section>
+
+<section class="sec" id="platform" style="padding-top:0"><div class="in">
+  <div class="sec-h"><div><span class="eyebrow">The platform</span><h2>Every supply chain question, answered on your own data</h2></div>
+    <p class="muted" style="max-width:44ch">Modules are grouped by the question they answer, and all of them run on the same uploaded data and knowledge graph.</p></div>
+  <div class="plat" id="plat"></div>
+</div></section>
+
+<section class="band sec" id="how"><div class="in">
+  <div class="sec-h"><div><span class="eyebrow">How it works</span><h2>What the SCAIZ backend does with your data</h2></div>
+    <p style="color:var(--on-dark-muted);max-width:44ch">A single container serves the API and the web app. Each customer group gets its own storage, knowledge graph and query cache.</p></div>
+  <div class="pipe" id="pipe"></div>
+  <div class="stack" id="stack"></div>
+</div></section>
+
+<section class="sec" id="why"><div class="in">
+  <div class="sec-h"><div><span class="eyebrow">Why SCAIZ</span><h2>Built to fit your data, not the other way round</h2></div>
+    <p class="muted" style="max-width:44ch">If a source system changes, re-upload or re-sync it. You don’t need a remapping project or new dashboards, and you don’t need to rebuild the front end.</p></div>
+  <div class="bens" id="bens"></div>
+  <div class="schema" id="schema"></div>
+</div></section>
+
+<section class="band sec" id="measure"><div class="in measure">
+  <div>
+    <span class="eyebrow">Decision Readiness Test</span>
+    <h2>Five areas decide how fast and how well your supply chain responds. See where you stand in 3 minutes.</h2>
+    <div class="mlist" role="tablist" id="mlist"></div>
+  </div>
+  <div class="mpanel" role="tabpanel" id="mpanel" aria-live="polite"></div>
+</div></section>
+
+<section class="sec" id="industries"><div class="in">
+  <div class="ind-h"><div><span class="eyebrow">Industries</span><h2 style="margin-top:12px">Built around the decisions in your industry</h2></div>
+    <p class="muted" style="max-width:42ch">Pick your industry to start. The questions are the same for everyone; your follow-up review is tailored.</p></div>
+  <div class="cards" id="cards"></div>
+</div></section>
+
+<section class="test sec" id="test"><div class="in">
+  <div class="test-h"><div><span class="eyebrow">The test</span><h2 style="margin-top:12px">Decision Readiness Test</h2></div><span class="ctr" id="ctr"></span></div>
+  <div class="console">
+    <section class="pane q-pane" id="app" aria-live="polite"></section>
+    <aside class="pane map-pane" aria-label="Readiness map">
+      <div class="map-h"><h3>Readiness map</h3><span class="live" id="live"></span></div>
+      <div id="map"></div>
+      <div class="legend" id="legend"></div>
+      <div class="mstats" id="mstats"></div>
+    </aside>
+  </div>
+  <div id="lower"></div>
+</div></section>
+
+<section class="band sec" id="talk"><div class="in close">
+  <div style="display:flex;flex-direction:column;gap:14px"><h2>See SCAIZ on your own data</h2>
+    <p style="color:var(--on-dark-muted);max-width:60ch">Book a 30-minute demo. We load a sample of your tables, show the modules behind your focus areas and walk through your readiness result. Email <span id="talkMail" style="font-family:var(--f-mono);user-select:all;color:var(--on-dark)">ranga@oblak.ai</span>.</p></div>
+  <div class="row"><a class="btn" href="#test" data-start>Take the test</a><button class="btn line" id="copyTalk">Copy email address</button></div>
+</div></section>
+
+<footer><div class="in"><img class="logo" id="footLogo" src="" alt="SCAIZ" style="height:22px"><span>SCAIZ supply chain decision intelligence. The readiness test is an indicative self-assessment, not a peer benchmark. Your answers stay in this browser.</span></div></footer>
+
+<script>
+/* ======================= EDIT HERE: page content ======================= */
+const SITE={
+ contact:"ranga@oblak.ai",
+ stats:[["50+","planning, operations and governance modules"],["20+","connectors: databases, cloud storage, FTP, REST, SAP, Salesforce, Tally"],["0","invented numbers. If the data can’t support a figure, SCAIZ says so"],["3 min","readiness test, with no sign-up needed"]],
+ platform:[
+  ["Demand & Supply Planning","What will customers need, and can we supply it?",["Demand forecasting","Demand sensing","Supply planning","Replenishment","IBP / S&OP"]],
+  ["Procurement","Are we buying from the right suppliers at the right price?",["Supplier 360","Supplier scorecard","Strategic sourcing","Spend management"]],
+  ["Inventory & Warehouse","Do we hold enough stock, but not too much?",["Inventory planning","Inventory aging","Warehouse ops","Yard management"]],
+  ["Manufacturing","Can we produce what is needed, on time?",["Production planning","Capacity planning","Detailed scheduling"]],
+  ["Order Management","Can we promise this order, and where is it now?",["Available-to-promise","Allocation planning","Track & trace"]],
+  ["Logistics & Transportation","Are deliveries on time and trucks well used?",["Logistics","Fleet management","Last-mile routing","Cost to serve"]],
+  ["Quality & Returns","What fails, why, and what comes back?",["Quality management","Delivery & returns","Disposition & recycling"]],
+  ["Risk & Control Tower","Where is the chain at risk right now?",["Control tower","Risk management","Supply chain map"]],
+  ["Analytics & AI","What should we do next, and what is it worth?",["Decision cockpit","Scenario planning","Optimization","Ask in plain language"]],
+  ["Data Management","Is our data connected, complete and understood?",["Data hub","Connectors","Knowledge graph","Data explorer"]],
+  ["Sustainability","What is our footprint, and how do we reduce it?",["Emissions","Sustainability KPIs"]]
+ ],
+ how:[
+  ["Ingest","Upload CSV, Excel, JSON or Parquet, or sync from a connector on a schedule."],
+  ["Persist","Data is stored as Parquet in your group’s own Azure Blob namespace. Blob is the source of truth."],
+  ["Understand","A semantic profiler works out what each column means (supplier, quantity, date) from the values, whatever the column is called."],
+  ["Relate","Tables, columns and joins go into a per-group knowledge graph. An LLM proposes the relationships, with a rule-based fallback."],
+  ["Decide","Planning engines and natural-language-to-SQL queries run on DuckDB. Results feed the decision queue, each with its evidence."]
+ ],
+ stack:[["FastAPI","JSON API and web app in one container"],["React","~50 module pages, one shared client"],["DuckDB","In-memory SQL analytics, per group"],["FalkorDB / NetworkX","Knowledge graph of your tables"],["Azure OpenAI","Pooled deployments, with a rule-based fallback"],["Azure Blob + Parquet","Durable, tenant-namespaced storage"],["Apache Iceberg","Optional table format"],["JWT + groups","Tenant isolation and role-based access"]],
+ benefits:[
+  ["Your columns, your language","SCAIZ recognises columns by their meaning, not their names. New sources, renamed fields or another language don’t need a remapping project or new screens. Re-upload and every module updates.",["Schema-agnostic","Semantic profiler"]],
+  ["Evidence-only numbers","Every KPI, forecast and planning parameter comes from your data. If the data can’t support a figure, SCAIZ shows why instead of guessing.",["columns_used","status contract"]],
+  ["Ask in plain language","Ask “which orders are at risk if this supplier slips a week?” SCAIZ uses the knowledge graph to write SQL and runs it on DuckDB.",["NL → SQL","Knowledge graph"]],
+  ["Decisions you can trace","The decision cockpit records each recommendation with its data, reasoning and outcome, so reviews and audits take minutes.",["Decision queue","Audit trail"]],
+  ["Secure and multi-tenant","Each group has its own graph, storage and cache. No generated code is executed, and access uses JWT sessions with roles.",["Per-group isolation","No eval / exec"]],
+  ["Live in days, not months","One container to deploy. Load sample data to explore, then connect your systems when you’re ready.",["Docker","Azure"]]
+ ],
+ schema:{title:"Three source systems, one meaning. You don’t need to remap anything.",
+  sources:[["Supplier Name","ERP export"],["Lieferant","German plant sheet"],["VENDOR_NM","Legacy database"]],
+  roles:["role: supplier","linked to: purchase orders, receipts, quality","used by: Supplier 360, Scorecard, Risk"]}
+};
+/* ===================== END EDIT: page content ========================== */
+
+const DIMS=[
+ {id:"connected",name:"Connected",desc:"Getting the data a decision needs",long:"Can you pull together data from ERP, planning tools, warehouses and spreadsheets fast enough to answer a cross-functional question?",modules:["Data hub","Connectors","Knowledge graph","Ask in plain language"]},
+ {id:"context",name:"Context",desc:"Shared rules and definitions",long:"Are allocation priorities, substitution rules and policies written down, and do teams agree on what each number means?",modules:["Semantic profiler","Ontology","Planning parameters","Allocation planning"]},
+ {id:"speed",name:"Speed",desc:"From exception to decision",long:"How early do you spot a late PO or demand spike, and how quickly does it turn into an agreed decision with a clear owner?",modules:["Control tower","Risk management","Decision cockpit","Track & trace"]},
+ {id:"foresight",name:"Foresight",desc:"Planning ahead of disruption",long:"Do you compare scenarios on service, cost and inventory, and re-plan often enough to catch change early?",modules:["Demand forecasting","Scenario planning","IBP / S&OP","Replenishment"]},
+ {id:"governance",name:"Governance",desc:"Knowing why decisions were made",long:"Can you trace a past decision back to the data and reasoning behind it, and learn from how it turned out?",modules:["Decision log","Evidence per number","Audit trail","Admin panel"]}
+];
+const INDUSTRIES=[
+ ["Pharma & healthcare",["Pharmaceuticals","Diagnostics & labs","Hospitals & healthcare providers","Medical devices"],"Batch release, expiry, cold chain and service levels for patients and labs."],
+ ["Process & energy",["Refining & petrochemicals","Chemicals","Metals & mining","Power & utilities"],"Crude and feedstock planning, turnaround schedules and long-lead spares."],
+ ["Manufacturing",["Automotive & components","Industrial & engineering goods","Electronics","Textiles & apparel"],"Material shortages, supplier delays and line schedules that change daily."],
+ ["Construction",["Building materials","Construction & infrastructure","Construction products & services"],"Site material flow, project schedules and supplier lead times."],
+ ["Consumer",["FMCG & food","Retail & e-commerce","Distribution & wholesale"],"Promotions, seasonal demand and stock across many locations."],
+ ["Logistics",["3PL & logistics services","Other"],"Capacity, carrier performance and customer commitments across modes."]
+];
+const Q=[
+ {dim:"industry",type:"select",q:"Which industry does your organisation mainly operate in?"},
+ {dim:"connected",type:"radio",q:"When a supply decision needs data from more than one system (ERP, planning tool, warehouse, spreadsheets), how do you get it?",
+  o:[["People export and stitch spreadsheets by hand each time",1],["A few standard reports; the rest is manual",2],["A data warehouse covers the core systems; gaps are filled by hand",3],["Most systems feed one shared view, refreshed daily",4],["All relevant systems can be queried together, close to real time",5]]},
+ {dim:"connected",type:"radio",q:"How long does it take to answer a cross-functional question such as “which customer orders are at risk if this supplier slips by a week?”",
+  o:[["We usually can’t answer it reliably",1],["Several days",2],["About a day",3],["A few hours",4],["Minutes",5]]},
+ {dim:"context",type:"radio",q:"Where do your business rules live: allocation priorities, substitution rules, safety-stock policies, customer tiers?",
+  o:[["Mostly in people’s heads",1],["Scattered across emails, slides and spreadsheets",2],["Documented, but not kept up to date",3],["Documented, owned and reviewed regularly",4],["Captured in a structured form that systems and tools use directly",5]]},
+ {dim:"context",type:"slider",q:"How often do teams disagree about whose number is right in planning reviews?",
+  l:"In almost every review",r:"Rarely. Definitions are agreed and shared"},
+ {dim:"speed",type:"radio",q:"When an exception happens (a late PO, a demand spike, a quality hold), how do you find out?",
+  o:[["When a customer or plant complains",1],["Someone spots it in a weekly report",2],["Daily reports flag some exceptions",3],["Automatic alerts cover most exception types",4],["Alerts arrive with the impact and options already worked out",5]]},
+ {dim:"speed",type:"slider",q:"How long does it take to go from spotting an exception to an agreed decision?",
+  l:"A week or more, with many hand-offs",r:"Same day, with a clear owner"},
+ {dim:"foresight",type:"radio",q:"How do you weigh trade-offs between service, cost and inventory?",
+  o:[["We don’t have a structured approach",1],["We protect service levels, even when it raises cost",2],["We protect cost and working capital, even when service suffers",2],["Experienced planners decide case by case",3],["Data informs these decisions sometimes, but not consistently",4],["We model and compare scenarios before each major decision",5]]},
+ {dim:"foresight",type:"radio",q:"How often do you re-run your supply plan and its scenarios?",
+  o:[["Only during the annual budget",1],["Monthly in S&OP, without scenarios",2],["Monthly, with a few scenarios",3],["Weekly, with scenarios for major risks",4],["Continuously, as conditions change",5]]},
+ {dim:"governance",type:"radio",q:"Can you trace why a past supply decision was made and which data it was based on?",
+  o:[["No, decisions aren’t recorded",1],["Sometimes, from emails or meeting notes",2],["Major decisions are logged, but not the data behind them",3],["Most decisions are logged with their reasoning",4],["Every decision is logged with its data, reasoning and outcome",5]]}
+];
+const ADVICE={
+ connected:{"++":"Your data is connected and quick to reach. Keep it that way as systems change, and extend coverage to suppliers and logistics partners.",
+  "+-":"Your systems are connected, but answers still take too long. Turn connected data into ready answers for the questions planners ask every week.",
+  "-+":"Teams answer questions quickly, but by working around disconnected systems, so the speed depends on a few people. Connect the core systems so answers don’t rely on manual stitching.",
+  "--":"Connecting your data is a clear opportunity. Start with the three or four systems behind most supply decisions and make them queryable together, so cross-functional questions take hours instead of days."},
+ context:{"++":"Business rules are written down and numbers are trusted. Keep rule owners in place and review rules whenever the business changes.",
+  "+-":"Rules are documented, but teams still disagree on numbers. Agree one definition for each key metric and make every report use it.",
+  "-+":"Teams agree on numbers, but the rules behind decisions live in people’s heads. Write down allocation, substitution and policy rules before the people who know them move on.",
+  "--":"Business context is a major gap. Capture the rules planners apply and agree shared definitions for key metrics, so every decision starts from the same facts."},
+ speed:{"++":"Exceptions are caught early and decided quickly. Next, handle routine exceptions with standard playbooks so people can focus on the hard ones.",
+  "+-":"You detect exceptions well, but decisions stall. Give each exception type a clear owner and a time limit, and cut the hand-offs between teams.",
+  "-+":"Once you know about a problem you decide quickly, but you find out late. Set up alerts for the exception types that hurt service most.",
+  "--":"Response speed is a priority. Detect exceptions automatically, attach their impact, and give each type a named owner so decisions take hours rather than days."},
+ foresight:{"++":"You model trade-offs and re-plan often. Extend your scenarios to supplier and logistics risks you don’t cover yet.",
+  "+-":"You use data for trade-offs, but plans are refreshed too rarely to catch change early. Move volatile items to a weekly re-plan.",
+  "-+":"You re-plan often, but trade-offs are still settled by fixed priorities or judgement. Compare a few scenarios on service, cost and inventory before each major decision.",
+  "--":"Planning foresight is a clear opportunity. Re-plan more often and compare scenarios on service, cost and inventory instead of relying on fixed priorities or experience alone."},
+ governance:{"+":"Decisions are recorded with their reasoning. Link outcomes back to them so you can see which calls worked.",
+  "-":"Decisions aren’t traceable today. Log major supply decisions with the data and reasoning behind them. Reviews and audits get faster, and you can learn from what worked."}
+};
+const BANDS=[
+ {n:4,test:(t,m)=>t>=20&&m>=4,level:"Decision-ready",text:"Your supply chain decides with connected data, shared rules and a clear trail. You have the foundations to automate routine decisions."},
+ {n:3,test:t=>t>=18,level:"Advanced",text:"You make strong, data-led decisions in most areas and are close to being decision-ready."},
+ {n:2,test:t=>t>=13,level:"Developing",text:"You have solid foundations, with a few gaps that slow decisions down or make them harder to trust."},
+ {n:1,test:()=>true,level:"Reactive",text:"Decisions rely heavily on manual work and individual experience. There is plenty of room to make them faster and more reliable."}
+];
+const EXAMPLE={connected:3,context:2.5,speed:2,foresight:3.5,governance:2};
+const CONTACT=SITE.contact;
+const ARR='<svg class="arr" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
+
+let step=-1, ans={}, keyPick=null;
+const $=id=>document.getElementById(id);
+const app=$("app"), ctr=$("ctr");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* hero canvas: light trails over a road network */
+const tok=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function heroCanvas(cv){
+  const ctx=cv.getContext("2d");let W,H,roads=[],cars=[];
+  function build(){
+    const r=cv.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);W=r.width;H=r.height;cv.width=W*d;cv.height=H*d;ctx.setTransform(d,0,0,d,0,0);
+    roads=[];const seed=[[-.1,.95,.45,.35,1.1,.15],[-.1,.7,.5,.62,1.1,-.1],[.2,1.1,.55,.4,.9,-.1],[.35,1.1,.6,.55,1.1,.35],[-.1,.3,.4,.45,1.1,.9],[.6,1.1,.75,.5,1.1,.1],[-.1,.5,.6,.2,1.1,.55]];
+    seed.forEach(s=>{const p=s.map((v,i)=>i%2?v*H:v*W);roads.push(p);roads.push(p.map((v,i)=>i%2?v+9:v+6))});
+    cars=Array.from({length:Math.max(40,Math.round(W/9))},()=>({r:Math.floor(Math.random()*roads.length),t:Math.random(),v:(.0008+Math.random()*.0016)*(Math.random()<.5?1:-1),c:Math.random()<.55?"trail":"trail-2"}));
+  }
+  const bez=(p,t)=>{const u=1-t;return [u*u*p[0]+2*u*t*p[2]+t*t*p[4],u*u*p[1]+2*u*t*p[3]+t*t*p[5]]};
+  function frame(){
+    const bg=tok("--ink"),T={trail:tok("--trail"),"trail-2":tok("--trail-2")},rd=tok("--road");
+    ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+    const g=ctx.createRadialGradient(W*.75,H*.3,0,W*.75,H*.3,W*.6);g.addColorStop(0,"rgba(25,148,250,.14)");g.addColorStop(1,"rgba(25,148,250,0)");ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    ctx.lineWidth=1;roads.forEach(p=>{ctx.strokeStyle=`rgba(${rd},.08)`;ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.quadraticCurveTo(p[2],p[3],p[4],p[5]);ctx.stroke()});
+    cars.forEach(c=>{const p=roads[c.r];const [x,y]=bez(p,c.t),[x2,y2]=bez(p,Math.min(1,Math.max(0,c.t-c.v*28)));
+      const gr=ctx.createLinearGradient(x2,y2,x,y);gr.addColorStop(0,`rgba(${T[c.c]},0)`);gr.addColorStop(1,`rgba(${T[c.c]},.85)`);
+      ctx.strokeStyle=gr;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x,y);ctx.stroke();
+      c.t+=c.v;if(c.t>1)c.t=0;if(c.t<0)c.t=1});
+  }
+  function loop(){frame();requestAnimationFrame(loop)}
+  build();frame();if(!RM)loop();
+  addEventListener("resize",()=>{build();frame()});
+}
+
+/* industry card canvases: small node networks */
+function netCanvas(cv,seed){
+  const r=cv.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2),W=r.width||300,H=r.height||120;cv.width=W*d;cv.height=H*d;
+  const x=cv.getContext("2d");x.setTransform(d,0,0,d,0,0);let s=seed*7919;const rnd=()=>(s=(s*9301+49297)%233280)/233280;
+  x.fillStyle=tok("--navy");x.fillRect(0,0,W,H);
+  const pts=Array.from({length:16},()=>[rnd()*W,rnd()*H]);
+  x.strokeStyle="rgba(25,148,250,.35)";x.lineWidth=1;
+  pts.forEach((p,i)=>pts.slice(i+1).forEach(q=>{if(Math.hypot(p[0]-q[0],p[1]-q[1])<W*.22){x.beginPath();x.moveTo(p[0],p[1]);x.lineTo(q[0],q[1]);x.stroke()}}));
+  pts.forEach((p,i)=>{x.fillStyle=i%5===0?"#1994FA":`rgba(${tok("--road")},.45)`;x.beginPath();x.arc(p[0],p[1],i%5===0?3.5:2,0,7);x.fill()});
+}
+
+/* measure band */
+let mSel=0;
+function renderMeasure(){
+  $("mlist").innerHTML=DIMS.map((d,k)=>{const n=Q.filter(q=>q.dim===d.id).length;return `<button role="tab" aria-selected="${k===mSel}" data-k="${k}"><span>${d.name}</span><small>${n} ${n>1?"questions":"question"}</small></button>`}).join("");
+  $("mlist").querySelectorAll("button").forEach(b=>b.onclick=()=>{mSel=+b.dataset.k;renderMeasure()});
+  const d=DIMS[mSel],q=Q.find(q=>q.dim===d.id&&q.type==="radio");
+  const seen=new Set();const lad=q.o.filter(([,v])=>!seen.has(v)&&seen.add(v));
+  $("mpanel").innerHTML=`<span class="k">${d.desc}</span><h3>${d.name}</h3><p class="q">${d.long}</p>
+   <p style="font-size:14px">From level 1 to level 5, for example:</p>
+   <div class="ladder">${lad.map(([t,v])=>`<div><b>LVL ${v}</b><span>${esc(t)}</span></div>`).join("")}</div>
+   <p class="k" style="margin-top:6px">Where SCAIZ helps</p>${chips(d.modules)}`;
+}
+
+/* product sections, rendered from SITE */
+const chips=a=>`<div class="chips">${(a||[]).map(m=>`<span class="chip">${esc(m)}</span>`).join("")}</div>`;
+function renderProduct(){
+  $("stats").innerHTML=SITE.stats.map(([b,t])=>`<div class="stat"><b>${esc(b)}</b><span>${esc(t)}</span></div>`).join("");
+  $("plat").innerHTML=SITE.platform.map(([t,q,m])=>`<article class="pcard"><h3>${esc(t)}</h3><p>${esc(q)}</p>${chips(m)}</article>`).join("");
+  $("pipe").innerHTML=SITE.how.map(([t,p],k)=>`<article class="step"><b>STEP ${k+1}</b><h3>${esc(t)}</h3><p>${esc(p)}</p></article>`).join("");
+  $("stack").innerHTML=SITE.stack.map(([b,t])=>`<div><b>${esc(b)}</b><span>${esc(t)}</span></div>`).join("");
+  $("bens").innerHTML=SITE.benefits.map(([t,p,m])=>`<article class="ben"><h3>${esc(t)}</h3><p>${esc(p)}</p>${chips(m)}</article>`).join("");
+  const sc=SITE.schema;
+  $("schema").innerHTML=`<h3>${esc(sc.title)}</h3>
+   <div class="col">${sc.sources.map(([c,s])=>`<div class="src"><span>${esc(c)}</span><small>${esc(s)}</small></div>`).join("")}</div>
+   <svg class="to" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+   <div class="col">${sc.roles.map(r=>`<div class="role">${esc(r)}</div>`).join("")}</div>`;
+  $("talkMail").textContent=CONTACT;
+  $("footLogo").src=$("navLogo").src;
+}
+
+/* industry cards */
+function renderCards(){
+  $("cards").innerHTML=INDUSTRIES.map(([g,items,why],k)=>`<article class="icard"><canvas data-seed="${k+3}" aria-hidden="true"></canvas><div class="b"><h3>${esc(g)}</h3><p>${esc(why)}</p>
+    <button data-g="${esc(g)}" data-s="${esc(items[0])}">Start as ${esc(g)} <span class="dot">${ARR}</span></button></div></article>`).join("");
+  const draw=()=>$("cards").querySelectorAll("canvas").forEach(c=>netCanvas(c,+c.dataset.seed));draw();addEventListener("resize",draw);
+  $("cards").querySelectorAll("button").forEach(b=>b.onclick=()=>{ans={0:b.dataset.g+"|"+b.dataset.s};show(1);$("test").scrollIntoView()});
+}
+
+/* scoring + radar */
+function perDim(){
+  const per={};
+  Q.forEach((q,i)=>{if(q.dim==="industry"||ans[i]===undefined)return;
+    const v=q.type==="radio"?q.o[ans[i]][1]:ans[i]/2;(per[q.dim]=per[q.dim]||[]).push(v)});
+  return DIMS.map(d=>{const v=per[d.id]||[];return {...d,count:v.length,score:v.length?v.reduce((a,b)=>a+b,0)/v.length:0,pattern:v.map(x=>x>=3?"+":"-").join("")}});
+}
+const C=160,R=112;
+const pt=(k,v)=>{const a=(-90+k*72)*Math.PI/180;return [C+Math.cos(a)*R*v/5,C+Math.sin(a)*R*v/5]};
+const poly=vals=>vals.map((v,k)=>pt(k,Math.max(v,.12)).map(n=>n.toFixed(1)).join(",")).join(" ");
+function radar({vals,mode,cur}){
+  let s=`<svg class="radar" viewBox="-62 -4 444 330" role="img" aria-label="Readiness map across five areas">`;
+  for(let r=1;r<=5;r++)s+=`<polygon class="ring" points="${poly(Array(5).fill(r))}"/>`;
+  DIMS.forEach((_,k)=>{const [x,y]=pt(k,5);s+=`<line class="axis" x1="${C}" y1="${C}" x2="${x}" y2="${y}"/>`});
+  [1,3,5].forEach(r=>{const [x,y]=pt(0,r);s+=`<text class="sub" x="${x+5}" y="${y+3}">${r}</text>`});
+  if(mode==="example")s+=`<polygon class="ex" points="${poly(vals)}"/>`;
+  if(mode==="result")s+=`<polygon class="bench" points="${poly(Array(5).fill(4))}"/>`;
+  if(mode!=="example")s+=`<polygon class="you" points="${poly(vals)}"/>`;
+  DIMS.forEach((d,k)=>{const [x,y]=pt(k,Math.max(vals[k],.12));const on=mode==="example"||vals[k]>0;
+    s+=`<circle class="node${on?" on":""}${cur===d.id?" cur":""}" cx="${x}" cy="${y}" r="${cur===d.id?6:4.5}"/>`;
+    const [lx,ly]=pt(k,6.15);const anc=Math.abs(lx-C)<8?"middle":lx<C?"end":"start";
+    s+=`<text class="lbl${on||cur===d.id?"":" dim"}" x="${lx}" y="${ly}" text-anchor="${anc}">${d.name}</text>`;
+    s+=`<text class="sub" x="${lx}" y="${ly+14}" text-anchor="${anc}">${mode==="example"?"":vals[k]?vals[k].toFixed(1)+" / 5":"—"}</text>`});
+  return s+`</svg>`;
+}
+function drawMap(mode){
+  const dims=perDim(),cur=step>=0&&Q[step]?Q[step].dim:null;
+  const vals=mode==="example"?DIMS.map(d=>EXAMPLE[d.id]):dims.map(d=>d.score);
+  $("map").innerHTML=radar({vals,mode,cur});
+  $("live").innerHTML=mode==="example"?"Example result":mode==="result"?"<i></i>Your result":"<i></i>Live";
+  $("legend").innerHTML=mode==="result"?`<span><i class="sw"></i>You</span><span><i class="sw d"></i>Decision-ready level (4 in every area)</span>`
+    :mode==="example"?`<span>A sample company’s map. Yours fills in as you answer.</span>`:`<span>Each area fills in as you answer its questions.</span>`;
+  $("mstats").innerHTML=dims.map(d=>`<div><b>${mode==="example"?EXAMPLE[d.id].toFixed(1):d.count?d.score.toFixed(1):"–"}</b><span>${d.name}</span></div>`).join("");
+}
+
+/* test screens */
+function start(){
+  step=-1;ctr.textContent="";$("lower").innerHTML="";keyPick=null;
+  app.innerHTML=`<div class="fade" style="display:flex;flex-direction:column;gap:20px">
+   <p class="k">Ready when you are</p>
+   <h1>How ready is your supply chain to decide?</h1>
+   <p class="muted" style="font-size:16.5px;max-width:56ch">You’ll get a score out of 25, your readiness map, and the three areas to work on first.</p>
+   <div class="feat"><div><b>10</b><span>questions</span></div><div><b>~3 min</b><span>to complete</span></div><div><b>0</b><span>sign-up needed</span></div></div>
+   <div class="row"><button class="btn" id="go">Start the test ${ARR}</button></div>
+  </div>`;
+  $("go").onclick=()=>show(0);
+  drawMap("example");
+}
+function rail(i){
+  const order=["industry",...DIMS.map(d=>d.id)],names=["Industry",...DIMS.map(d=>d.name)];
+  return `<div class="rail">${order.map((id,k)=>{const qs=Q.map((q,j)=>[q,j]).filter(([q])=>q.dim===id);const frac=qs.filter(([,j])=>j<i).length/qs.length;
+    return `<div class="${Q[i].dim===id?"cur":""}"><i><b style="transform:scaleX(${frac})"></b></i><span>${names[k]}</span></div>`}).join("")}</div>`;
+}
+function show(i){
+  step=i;ctr.textContent=`Question ${i+1} of ${Q.length}`;$("lower").innerHTML="";
+  const q=Q[i];let body="";
+  if(q.type==="select"){
+    body=`<select id="ind" aria-label="Industry"><option value="">Select an industry</option>${INDUSTRIES.map(([g,items])=>`<optgroup label="${esc(g)}">${items.map(x=>`<option value="${esc(g)}|${esc(x)}"${ans[i]===g+"|"+x?" selected":""}>${esc(x)}</option>`).join("")}</optgroup>`).join("")}</select>
+    <p class="hint">Your industry tailors the follow-up we offer. It doesn’t change your score.</p>
+    <div class="row" style="justify-content:space-between"><button class="btn ghost" id="prev">Back</button><button class="btn" id="next" ${ans[i]?"":"disabled"}>Next ${ARR}</button></div>`;
+  }else if(q.type==="radio"){
+    body=`<div class="opts" role="radiogroup">${q.o.map(([t],k)=>`<button class="opt${ans[i]===k?" sel":""}" role="radio" aria-checked="${ans[i]===k}" data-k="${k}"><span class="n">${k+1}</span><span>${esc(t)}</span></button>`).join("")}</div>
+    <div class="row" style="justify-content:space-between"><button class="btn ghost" id="prev">Back</button><span class="hint">Press 1–${q.o.length} to answer</span></div>`;
+  }else{
+    const v=ans[i]??5;
+    body=`<div class="slider"><div class="sv"><b id="sv">${v}</b><span>/ 10</span></div>
+      <input type="range" min="1" max="10" step="1" value="${v}" id="rng" aria-label="${esc(q.q)}">
+      <div class="ticks">${Array.from({length:10},(_,k)=>`<span>${k+1}</span>`).join("")}</div>
+      <div class="ends"><span>${esc(q.l)}</span><span>${esc(q.r)}</span></div></div>
+      <div class="row" style="justify-content:space-between"><button class="btn ghost" id="prev">Back</button><button class="btn" id="next">Next ${ARR}</button></div>`;
+  }
+  const dim=DIMS.find(d=>d.id===q.dim);
+  app.innerHTML=rail(i)+`<div class="fade" style="display:flex;flex-direction:column;gap:18px"><p class="k">${dim?dim.name+" · "+dim.desc:"About you"}</p><h2>${esc(q.q)}</h2>${body}</div>`;
+  const next=()=>i+1<Q.length?show(i+1):results();
+  $("prev").onclick=()=>i>0?show(i-1):start();
+  keyPick=null;
+  if(q.type==="select"){const s=$("ind"),n=$("next");s.onchange=()=>{ans[i]=s.value;n.disabled=!s.value};n.onclick=next}
+  else if(q.type==="radio"){
+    const pick=k=>{ans[i]=k;app.querySelectorAll(".opt").forEach(x=>{const on=+x.dataset.k===k;x.classList.toggle("sel",on);x.setAttribute("aria-checked",on)});drawMap("live");setTimeout(next,RM?0:260)};
+    app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>pick(+b.dataset.k));keyPick=pick;
+  }else{const r=$("rng");ans[i]=+r.value;r.oninput=()=>{ans[i]=+r.value;$("sv").textContent=r.value;drawMap("live")};$("next").onclick=next}
+  drawMap("live");
+  const top=$("test").getBoundingClientRect().top;if(top<-200||top>innerHeight*.6)$("test").scrollIntoView();
+}
+addEventListener("keydown",e=>{
+  if(step<0||!Q[step])return;
+  const t=$("test").getBoundingClientRect();if(t.top>innerHeight*.5||t.bottom<0)return;
+  if(e.target.tagName==="SELECT"&&e.key!=="Enter")return;
+  const q=Q[step];
+  if(q.type==="radio"&&/^[1-9]$/.test(e.key)&&+e.key<=q.o.length&&keyPick)keyPick(+e.key-1);
+  if(e.key==="Enter"&&q.type!=="radio"&&e.target.tagName!=="BUTTON"){const n=$("next");if(n&&!n.disabled){e.preventDefault();n.click()}}
+});
+
+function results(){
+  step=Q.length;ctr.textContent="Your result";keyPick=null;
+  const dims=perDim(),total=Math.round(dims.reduce((a,d)=>a+d.score,0)),min=Math.min(...dims.map(d=>d.score));
+  const band=BANDS.find(b=>b.test(total,min));
+  const strong=dims.filter(d=>!d.pattern.includes("-")).sort((a,b)=>b.score-a.score),weak=dims.filter(d=>d.pattern.includes("-")).sort((a,b)=>a.score-b.score);
+  const list=a=>a.length<2?a.join(""):a.slice(0,-1).join(", ")+" and "+a[a.length-1];
+  const summary=!strong.length?"You have room to improve in all five areas. Start with the areas where your answers were lowest."
+    :!weak.length?"You are performing well in all five areas.":`You are well set up for ${list(strong.map(d=>d.name))}. Focus next on ${list(weak.map(d=>d.name))}.`;
+  const focus=[...dims].sort((a,b)=>a.score-b.score).slice(0,3);
+  const [grp,sub]=(ans[0]||"|").split("|");const CIRC=2*Math.PI*52;
+  app.innerHTML=`<div class="fade" style="display:flex;flex-direction:column;gap:20px">
+    <p class="k">Your result</p>
+    <div class="score"><div class="dial"><svg viewBox="0 0 120 120"><circle class="t" cx="60" cy="60" r="52"/><circle class="f" id="arc" cx="60" cy="60" r="52" stroke-dasharray="${CIRC}" stroke-dashoffset="${CIRC}"/></svg><div><b id="tot">0</b><span>out of 25</span></div></div>
+      <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:6px"><p class="k">Level ${band.n} of 4</p><h2>${band.level}</h2><div class="lvl">${[1,2,3,4].map(n=>`<i class="${n<=band.n?"on":""}"></i>`).join("")}</div></div></div>
+    <p class="muted">${band.text}</p><p class="summary">${summary}</p>
+    <div class="row"><button class="btn ghost" id="again">Retake the test</button></div></div>`;
+  $("lower").innerHTML=`<section style="margin-top:28px;display:flex;flex-direction:column;gap:14px"><h3 style="font-size:22px">Where to focus first</h3><div class="fcards">
+    ${focus.map((d,k)=>`<article class="fcard${k===0?" top":""}"><div class="card-h"><h3>${d.name}</h3>${k===0?'<span class="tag">Biggest opportunity</span>':`<span class="k">${d.pattern.includes("-")?"Priority "+(k+1):"Keep it up"}</span>`}</div>
+      <div class="meter"><i><b style="width:${(d.score/5*100).toFixed(0)}%"></b></i>${d.score.toFixed(1)} / 5</div><p>${ADVICE[d.id][d.pattern]}</p>
+      <span class="k">In SCAIZ</span>${chips(d.modules)}</article>`).join("")}</div></section>
+   <div class="lower"><section class="pane cta"><p class="k">Next step</p><h2>See SCAIZ fix your focus areas</h2>
+     <p>Book a 30-minute SCAIZ demo for ${esc(sub||grp||"your industry")}. We load a sample of your data and show the modules behind your three focus areas: ${esc(focus.map(d=>d.name).join(", "))}. Copy your results and email them to us:</p>
+     <div class="mail">${CONTACT}</div><div class="row"><button class="btn" id="copy">Copy my results</button><button class="btn ghost" id="copym">Copy email address</button></div><p class="toast" id="toast" role="status"></p></section>
+    <details class="pane"><summary>How this test is scored</summary>
+     <p>This is an indicative self-assessment built on common supply chain decision practices. It is not a benchmark against other companies.</p>
+     <p>Each answer scores 1 to 5 (sliders 1 to 10, halved). Each area is the average of its answers, and your total adds the five areas together. The dashed shape on the map marks the decision-ready level: 4 or more in every area and at least 20 in total.</p>
+     <p>Your answers are not stored or sent anywhere. They stay in this browser until you close the page.</p></details></div>`;
+  drawMap("result");
+  const arc=$("arc"),tot=$("tot");requestAnimationFrame(()=>requestAnimationFrame(()=>arc.style.strokeDashoffset=CIRC*(1-total/25)));
+  if(RM)tot.textContent=total;else{let n=0;const t=setInterval(()=>{tot.textContent=++n>=total?(clearInterval(t),total):n},45)}
+  const text=`SCAIZ Decision Readiness Test\nIndustry: ${sub||"-"} (${grp||"-"})\nScore: ${total}/25 (Level ${band.n}: ${band.level})\n`+dims.map(d=>`${d.name}: ${d.score.toFixed(1)}/5`).join("\n")+`\nFocus areas: ${focus.map(d=>d.name).join(", ")}\nSCAIZ modules to see: ${[...new Set(focus.flatMap(d=>d.modules))].join(", ")}`;
+  const toast=$("toast");
+  $("copy").onclick=()=>copyText(text,toast,"Results copied. Paste them into an email to "+CONTACT+".");
+  $("copym").onclick=()=>copyText(CONTACT,toast,"Email address copied.");
+  $("again").onclick=()=>{ans={};start()};
+  $("test").scrollIntoView();
+}
+function copyText(s,el,msg){navigator.clipboard.writeText(s).then(()=>{if(el)el.textContent=msg}).catch(()=>{if(el)el.textContent="Copy isn’t available here. Select and copy this yourself: "+s.replace(/\n/g," · ")})}
+
+document.querySelectorAll("[data-start]").forEach(a=>a.addEventListener("click",()=>{if(step<0)setTimeout(()=>show(0),RM?0:350)}));
+$("copyTalk").onclick=e=>{copyText(CONTACT,null,"");e.currentTarget.textContent="Email address copied"};
+heroCanvas($("heroCv"));renderProduct();renderMeasure();renderCards();start();
+</script>
+</body>
+</html>
